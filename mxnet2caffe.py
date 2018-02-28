@@ -4,10 +4,14 @@ import mxnet as mx
 import caffe
 
 parser = argparse.ArgumentParser(description='Convert MXNet model to Caffe model')
-parser.add_argument('--mx-model',    type=str, default='model_mxnet/residual')
-parser.add_argument('--mx-epoch',    type=int, default=0)
-parser.add_argument('--cf-prototxt', type=str, default='model_caffe/deploy.prototxt')
-parser.add_argument('--cf-model',    type=str, default='model_caffe/residual.caffemodel')
+#parser.add_argument('--mx-model',    type=str, default='model_mxnet/residual')
+#parser.add_argument('--mx-epoch',    type=int, default=0)
+#parser.add_argument('--cf-prototxt', type=str, default='model_caffe/deploy.prototxt')
+#parser.add_argument('--cf-model',    type=str, default='model_caffe/residual.caffemodel')
+parser.add_argument('--mx-model',    type=str, default='../mx-model/old1/onetnew3')
+parser.add_argument('--mx-epoch',    type=int, default=52)
+parser.add_argument('--cf-prototxt', type=str, default='../mx-model/old1/onetnew3.prototxt')
+parser.add_argument('--cf-model',    type=str, default='../mx-model/old1/onetnew3.caffemodel')
 args = parser.parse_args()
 
 # ------------------------------------------
@@ -65,17 +69,10 @@ for i_key,key_i in enumerate(all_keys):
            %(i_key, key_i.ljust(40), key_caffe.ljust(30)))
     
   except KeyError:
-    print("\nWarning!  key error mxnet:{}".format(key_i))  
+    print("\nError!  key error mxnet:{}".format(key_i))  
       
 # ------------------------------------------
 # Finish
 net.save(args.cf_model)
 print("\n- Finished.\n")
-
-
-
-
-
-
-
 

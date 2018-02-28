@@ -699,7 +699,7 @@ layer {
 }
 
 layer {
-  bottom: "pool5"
+  bottom: "flatten"
   top: "fc"
   name: "fc"
   type: "InnerProduct"
