@@ -4,14 +4,14 @@ import mxnet as mx
 import caffe
 
 parser = argparse.ArgumentParser(description='Convert MXNet model to Caffe model')
-#parser.add_argument('--mx-model',    type=str, default='model_mxnet/residual')
-#parser.add_argument('--mx-epoch',    type=int, default=0)
-#parser.add_argument('--cf-prototxt', type=str, default='model_caffe/deploy.prototxt')
-#parser.add_argument('--cf-model',    type=str, default='model_caffe/residual.caffemodel')
-parser.add_argument('--mx-model',    type=str, default='../mx-model/old1/onetnew3')
-parser.add_argument('--mx-epoch',    type=int, default=52)
-parser.add_argument('--cf-prototxt', type=str, default='../mx-model/old1/onetnew3.prototxt')
-parser.add_argument('--cf-model',    type=str, default='../mx-model/old1/onetnew3.caffemodel')
+#parser.add_argument('--mx-model',    type=str, default='../mx-model/old1/onetnew3')
+#parser.add_argument('--mx-epoch',    type=int, default=52)
+#parser.add_argument('--cf-prototxt', type=str, default='../mx-model/old1/onetnew3.prototxt')
+#parser.add_argument('--cf-model',    type=str, default='../mx-model/old1/onetnew3.caffemodel')
+parser.add_argument('--mx-model',    type=str, default='../mx-model/model-r34-amf/model')
+parser.add_argument('--mx-epoch',    type=int, default=0)
+parser.add_argument('--cf-prototxt', type=str, default='../mx-model/model-r34-amf/model.prototxt')
+parser.add_argument('--cf-model',    type=str, default='../mx-model/model-r34-amf/model.caffemodel')
 args = parser.parse_args()
 
 # ------------------------------------------
@@ -43,14 +43,14 @@ for i_key,key_i in enumerate(all_keys):
     elif '_bias' in key_i:
       key_caffe = key_i.replace('_bias','')
       net.params[key_caffe][1].data.flat = arg_params[key_i].asnumpy().flat   
-    elif '_gamma' in key_i:
+    elif '_gamma' in key_i and 'relu' not in key_i:
       key_caffe = key_i.replace('_gamma','_scale')
       net.params[key_caffe][0].data.flat = arg_params[key_i].asnumpy().flat
     # TODO: support prelu
-    #elif '_gamma' in key_i:   # for prelu
-    #  key_caffe = key_i.replace('_gamma','')
-    #  assert (len(net.params[key_caffe]) == 1)
-    #  net.params[key_caffe][0].data.flat = arg_params[key_i].asnumpy().flat
+    elif '_gamma' in key_i and 'relu' in key_i:   # for prelu
+      key_caffe = key_i.replace('_gamma','')
+      assert (len(net.params[key_caffe]) == 1)
+      net.params[key_caffe][0].data.flat = arg_params[key_i].asnumpy().flat
     elif '_beta' in key_i:
       key_caffe = key_i.replace('_beta','_scale')
       net.params[key_caffe][1].data.flat = arg_params[key_i].asnumpy().flat    
