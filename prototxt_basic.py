@@ -11,7 +11,7 @@ def data(txt_file, info):
   txt_file.write('  type: "Input"\n')
   txt_file.write('  top: "data"\n')
   txt_file.write('  input_param {\n')
-  txt_file.write('    shape: { dim: 1 dim: 3 dim: 64 dim: 64 }\n') # TODO
+  txt_file.write('    shape: { dim: 1 dim: 3 dim: 112 dim: 112 }\n') # TODO
   txt_file.write('  }\n')
   txt_file.write('}\n')
   txt_file.write('\n')
@@ -62,7 +62,7 @@ def ChannelwiseConvolution(txt_file, info):
   Convolution(txt_file, info)
   
 def BatchNorm(txt_file, info):
-  pprint.pprint(info)
+  #pprint.pprint(info)
   txt_file.write('layer {\n')
   txt_file.write('  bottom: "%s"\n'       % info['bottom'][0])
   txt_file.write('  top: "%s"\n'          % info['top'])
@@ -172,6 +172,14 @@ def LeakyReLU(txt_file, info):
     txt_file.write('  elu_param { alpha: 0.25 }\n')
     txt_file.write('}\n')
     txt_file.write('\n')
+  elif info[attrstr]['act_type'] == 'prelu':
+    txt_file.write('layer {\n')
+    txt_file.write('  bottom: "%s"\n'     % info['bottom'][0])
+    txt_file.write('  top: "%s"\n'        % info['top'])
+    txt_file.write('  name: "%s"\n'       % info['top'])
+    txt_file.write('  type: "PReLU"\n')
+    txt_file.write('}\n')
+    txt_file.write('\n')      
   else:
     raise Exception("unsupported Activation")
 
@@ -219,8 +227,9 @@ def write_node(txt_file, info):
     elif info['op'] == 'elemwise_add':
         ElementWiseSum(txt_file, info)
     else:
-        pprint.pprint(info)
-        sys.exit("Warning!  Unknown mxnet op:{}".format(info['op']))
+        #pprint.pprint(info)
+        #sys.exit("Warning!  Unknown mxnet op:{}".format(info['op']))
+        print "Warning! Skip Unknown mxnet op:{}".format(info['op'])
 
 
 
