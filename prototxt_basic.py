@@ -32,9 +32,9 @@ def Convolution(txt_file, info):
   if fuzzy_haskey(info['params'], 'bias'):
     bias_term = 'true'  
   elif info[attrstr].has_key('no_bias') and info['attrs']['no_bias'] == 'True':
-    bias_term = 'true'  
+    bias_term = 'false'  
   else:
-    bias_term = 'false'
+    bias_term = 'true'
   txt_file.write('layer {\n')
   txt_file.write('	bottom: "%s"\n'       % info['bottom'][0])
   txt_file.write('	top: "%s"\n'          % info['top'])
