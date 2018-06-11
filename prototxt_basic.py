@@ -3,6 +3,7 @@ import sys
 import pprint
 
 attrstr = "attrs"
+#attrstr = "param"
 
 def data(txt_file, info):
   txt_file.write('name: "mxnet-mdoel"\n')
@@ -96,7 +97,10 @@ def Activation(txt_file, info):
   txt_file.write('  bottom: "%s"\n'       % info['bottom'][0])
   txt_file.write('  top: "%s"\n'          % info['top'])
   txt_file.write('  name: "%s"\n'         % info['top'])
-  txt_file.write('  type: "ReLU"\n')      # TODO
+  if info[attrstr]['act_type']=='sigmoid':
+    txt_file.write('  type: "Sigmoid"\n')
+  else:
+    txt_file.write('  type: "ReLU"\n')      # TODO
   txt_file.write('}\n')
   txt_file.write('\n')
   pass
@@ -132,11 +136,14 @@ def Pooling(txt_file, info):
   txt_file.write('  name: "%s"\n'         % info['top'])
   txt_file.write('  type: "Pooling"\n')
   txt_file.write('  pooling_param {\n')
-  txt_file.write('    pool: %s\n'         % pool_type)       # TODO
-  txt_file.write('    kernel_size: %s\n'  % info[attrstr]['kernel'].split('(')[1].split(',')[0])
-  txt_file.write('    stride: %s\n'       % info[attrstr]['stride'].split('(')[1].split(',')[0])
-  if info[attrstr].has_key('pad'):
-    txt_file.write('    pad: %s\n'          % info[attrstr]['pad'].split('(')[1].split(',')[0])
+  txt_file.write('    pool: %s\n'         % pool_type)       # TODO  
+  if info[attrstr].has_key('global_pool') and info[attrstr]['global_pool'] == 'True':
+    txt_file.write('    global_pooling: true\n')
+  else:
+    txt_file.write('    kernel_size: %s\n'  % info[attrstr]['kernel'].split('(')[1].split(',')[0])
+    txt_file.write('    stride: %s\n'       % info[attrstr]['stride'].split('(')[1].split(',')[0])
+    if info[attrstr].has_key('pad'):
+      txt_file.write('    pad: %s\n'          % info[attrstr]['pad'].split('(')[1].split(',')[0])
   txt_file.write('  }\n')
   txt_file.write('}\n')
   txt_file.write('\n')

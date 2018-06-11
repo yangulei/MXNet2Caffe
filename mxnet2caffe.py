@@ -4,10 +4,10 @@ import mxnet as mx
 import caffe
 
 parser = argparse.ArgumentParser(description='Convert MXNet model to Caffe model')
-parser.add_argument('--mx-model',    type=str, default='../model-r50-am-lfw/model')
+parser.add_argument('--mx-model',    type=str, default='model_mxnet/face/facega2')
 parser.add_argument('--mx-epoch',    type=int, default=0)
-parser.add_argument('--cf-prototxt', type=str, default='../model-r50-am-lfw/model.prototxt')
-parser.add_argument('--cf-model',    type=str, default='../model-r50-am-lfw/model.caffemodel')
+parser.add_argument('--cf-prototxt', type=str, default='model_caffe/face/facega2.prototxt')
+parser.add_argument('--cf-model',    type=str, default='model_caffe/face/facega2.caffemodel')
 args = parser.parse_args()
 
 # ------------------------------------------
@@ -35,6 +35,10 @@ for i_key,key_i in enumerate(all_keys):
       pass
     elif '_weight' in key_i:
       key_caffe = key_i.replace('_weight','')
+      if 'fc' in key_i:
+        print key_i
+        print arg_params[key_i].shape
+        print net.params[key_caffe][0].data.shape
       net.params[key_caffe][0].data.flat = arg_params[key_i].asnumpy().flat      
     elif '_bias' in key_i:
       key_caffe = key_i.replace('_bias','')

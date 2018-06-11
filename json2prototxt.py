@@ -4,8 +4,8 @@ import json
 from prototxt_basic import *
 
 parser = argparse.ArgumentParser(description='Convert MXNet jason to Caffe prototxt')
-parser.add_argument('--mx-json',     type=str, default='../model-r50-am-lfw/model-symbol.modified.json')
-parser.add_argument('--cf-prototxt', type=str, default='../model-r50-am-lfw/model.prototxt')
+parser.add_argument('--mx-json',     type=str, default='model_mxnet/face/facega2-symbol.json')
+parser.add_argument('--cf-prototxt', type=str, default='model_caffe/face/facega2.prototxt')
 args = parser.parse_args()
 
 with open(args.mx_json) as json_file:    
