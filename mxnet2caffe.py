@@ -1,20 +1,23 @@
 import sys, argparse
+import os
+os.environ['GLOG_minloglevel'] = '2'
 import find_mxnet, find_caffe
 import mxnet as mx
 import caffe
 
 parser = argparse.ArgumentParser(description='Convert MXNet model to Caffe model')
-parser.add_argument('--mx-model',    type=str, default='model_mxnet/face/facega2')
+parser.add_argument('--mx-model',    type=str, default='./model_mxnet/model')
 parser.add_argument('--mx-epoch',    type=int, default=0)
-parser.add_argument('--cf-prototxt', type=str, default='model_caffe/face/facega2.prototxt')
-parser.add_argument('--cf-model',    type=str, default='model_caffe/face/facega2.caffemodel')
+parser.add_argument('--cf-prototxt', type=str, default='./model_caffe/face-mobile.prototxt')
+parser.add_argument('--cf-model',    type=str, default='./model_caffe/face-mobile.caffemodel')
 args = parser.parse_args()
 
 # ------------------------------------------
 # Load
 _, arg_params, aux_params = mx.model.load_checkpoint(args.mx_model, args.mx_epoch)
+print("-------load mxnet model successful")
 net = caffe.Net(args.cf_prototxt, caffe.TRAIN)   
-
+print("-------load caffe prototxt success")
 # ------------------------------------------
 # Convert
 all_keys = arg_params.keys() + aux_params.keys()
@@ -38,6 +41,7 @@ for i_key,key_i in enumerate(all_keys):
       if 'fc' in key_i:
         print key_i
         print arg_params[key_i].shape
+        key_caffe = 'pre_fc1'
         print net.params[key_caffe][0].data.shape
       net.params[key_caffe][0].data.flat = arg_params[key_i].asnumpy().flat      
     elif '_bias' in key_i:

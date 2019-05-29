@@ -46,8 +46,9 @@ def Convolution(txt_file, info):
   txt_file.write('		kernel_size: %s\n'  % info[attrstr]['kernel'].split('(')[1].split(',')[0]) # TODO
   if info[attrstr].has_key('pad'):
     txt_file.write('		pad: %s\n'          % info[attrstr]['pad'].split('(')[1].split(',')[0]) # TODO
-  if info[attrstr].has_key('num_group'):
+  if info[attrstr].has_key('num_group') and int(info[attrstr]['num_group']) >1:
     txt_file.write('		group: %s\n'        % info[attrstr]['num_group'])
+    txt_file.write('    engine: CAFFE\n')
   if info[attrstr].has_key('stride'):
     txt_file.write('		stride: %s\n'       % info[attrstr]['stride'].split('(')[1].split(',')[0])
   txt_file.write('		bias_term: %s\n'    % bias_term)
@@ -78,7 +79,7 @@ def BatchNorm(txt_file, info):
   if info[attrstr].has_key('eps'):
     txt_file.write('    eps: %s\n' % info[attrstr]['eps'])
   else:
-    txt_file.write('    eps: 0.001\n')                   
+    txt_file.write('    eps: 2e-05\n')                   
   txt_file.write('  }\n')
   txt_file.write('}\n')
   # if info['fix_gamma'] is "False":                    # TODO
@@ -161,6 +162,7 @@ def FullyConnected(txt_file, info):
   txt_file.write('  }\n')
   txt_file.write('}\n')
   txt_file.write('\n')
+  print("fullconnect: ",info[attrstr]['num_hidden'],info['params'])
   pass
 
 def Flatten(txt_file, info):
@@ -215,7 +217,7 @@ def write_node(txt_file, info):
         BatchNorm(txt_file, info)
     elif info['op'] == 'Activation':
         Activation(txt_file, info)
-    elif info['op'] == 'ElementWiseSum':
+    elif info['op'] == 'ElementWiseSum': #elemwise_add
         ElementWiseSum(txt_file, info)
     elif info['op'] == '_Plus':
         ElementWiseSum(txt_file, info)
