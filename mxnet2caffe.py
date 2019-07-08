@@ -20,7 +20,7 @@ net = caffe.Net(args.cf_prototxt, caffe.TRAIN)
 print("-------load caffe prototxt success")
 # ------------------------------------------
 # Convert
-all_keys = arg_params.keys() + aux_params.keys()
+all_keys = list(arg_params.keys()) + list(aux_params.keys())
 all_keys.sort()
 
 print('----------------------------------\n')
@@ -39,10 +39,10 @@ for i_key,key_i in enumerate(all_keys):
     elif '_weight' in key_i:
       key_caffe = key_i.replace('_weight','')
       if 'fc' in key_i:
-        print key_i
-        print arg_params[key_i].shape
+        print(key_i)
+        print(arg_params[key_i].shape)
         key_caffe = 'pre_fc1'
-        print net.params[key_caffe][0].data.shape
+        print(net.params[key_caffe][0].data.shape)
       net.params[key_caffe][0].data.flat = arg_params[key_i].asnumpy().flat      
     elif '_bias' in key_i:
       key_caffe = key_i.replace('_bias','')
@@ -53,6 +53,7 @@ for i_key,key_i in enumerate(all_keys):
     # TODO: support prelu
     elif '_gamma' in key_i and 'relu' in key_i:   # for prelu
       key_caffe = key_i.replace('_gamma','')
+      key_caffe.replace('relu', 'prelu')
       assert (len(net.params[key_caffe]) == 1)
       net.params[key_caffe][0].data.flat = arg_params[key_i].asnumpy().flat
     elif '_beta' in key_i:
